@@ -1,17 +1,6 @@
-async function verifyToken(token, secret) {
-  if (!token) return false;
-  const i = token.lastIndexOf(".");
-  if (i === -1) return false;
-  const payload = token.slice(0, i);
-  const sig = token.slice(i + 1);
-  if (Date.now() > parseInt(payload)) return false;
-  try {
-    const enc = new TextEncoder();
-    const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
-    const expected = await crypto.subtle.sign("HMAC", key, enc.encode(payload));
-    const expectedB64 = btoa(String.fromCharCode(...new Uint8Array(expected)));
-    return sig === expectedB64;
-  } catch { return false; }
+async function hashPassword(password) {
+  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(password));
+  return btoa(String.fromCharCode(...new Uint8Array(hash)));
 }
 
 export async function onRequest(context) {
@@ -20,11 +9,17 @@ export async function onRequest(context) {
 
   const authHeader = request.headers.get("Authorization") || "";
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-  const authed = await verifyToken(token, env.TOKEN_SECRET || env.BALANCE_PASSWORD);
-  if (!authed) {
+
+  if (!token) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      status: 401, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+    });
+  }
+
+  const expected = await hashPassword(env.BALANCE_PASSWORD || "");
+  if (token !== expected) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
     });
   }
 

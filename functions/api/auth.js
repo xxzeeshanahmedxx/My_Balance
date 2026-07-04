@@ -1,10 +1,6 @@
-async function signToken(secret) {
-  const exp = String(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(exp));
-  const sigB64 = btoa(String.fromCharCode(...new Uint8Array(sig)));
-  return `${exp}.${sigB64}`;
+async function hashPassword(password) {
+  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(password));
+  return btoa(String.fromCharCode(...new Uint8Array(hash)));
 }
 
 export async function onRequest(context) {
@@ -30,7 +26,7 @@ export async function onRequest(context) {
       return Response.json({ ok: false }, { status: 401, headers: corsHeaders });
     }
 
-    const token = await signToken(env.TOKEN_SECRET || env.BALANCE_PASSWORD);
+    const token = await hashPassword(password);
     return Response.json({ ok: true, token }, { headers: corsHeaders });
   } catch (err) {
     return Response.json({ error: err.message }, { status: 500, headers: corsHeaders });
