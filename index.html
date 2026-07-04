@@ -5,45 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Balance</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="bg-gradient"></div>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
   <div class="container">
-    <header>
-      <h1>My Balance</h1>
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">💰</span>
+        <h1>My Balance</h1>
+      </div>
+      <p class="subtitle">Track your finances</p>
     </header>
 
     <div class="balance-card">
+      <div class="balance-shine"></div>
       <span class="balance-label">Current Balance</span>
       <span class="balance-amount" id="balance">PKR 0</span>
+      <div class="balance-bar">
+        <div class="balance-bar-fill" id="balanceBar"></div>
+      </div>
     </div>
 
     <div class="row">
       <div class="card income-card">
-        <h2>Add Income</h2>
+        <div class="card-header">
+          <div class="card-icon income-icon">↑</div>
+          <h2>Add Income</h2>
+        </div>
         <form id="incomeForm">
-          <input type="text" id="incomeSource" placeholder="Source (e.g. Salary)" required>
-          <input type="number" id="incomeAmount" placeholder="Amount" min="0" required>
-          <button type="submit" class="btn btn-income">+ Add Income</button>
+          <div class="input-group">
+            <input type="text" id="incomeSource" placeholder=" " required>
+            <label for="incomeSource">Source</label>
+            <div class="input-glow"></div>
+          </div>
+          <div class="input-group">
+            <input type="number" id="incomeAmount" placeholder=" " min="0" required>
+            <label for="incomeAmount">Amount</label>
+            <div class="input-glow"></div>
+          </div>
+          <button type="submit" class="btn btn-income">
+            <span>+ Add Income</span>
+            <div class="btn-shine"></div>
+          </button>
         </form>
       </div>
 
       <div class="card expense-card">
-        <h2>Add Expense</h2>
+        <div class="card-header">
+          <div class="card-icon expense-icon">↓</div>
+          <h2>Add Expense</h2>
+        </div>
         <form id="expenseForm">
-          <input type="text" id="expenseSource" placeholder="Source (e.g. Food)" required>
-          <input type="number" id="expenseAmount" placeholder="Amount" min="0" required>
-          <button type="submit" class="btn btn-expense">- Add Expense</button>
+          <div class="input-group">
+            <input type="text" id="expenseSource" placeholder=" " required>
+            <label for="expenseSource">Source</label>
+            <div class="input-glow"></div>
+          </div>
+          <div class="input-group">
+            <input type="number" id="expenseAmount" placeholder=" " min="0" required>
+            <label for="expenseAmount">Amount</label>
+            <div class="input-glow"></div>
+          </div>
+          <button type="submit" class="btn btn-expense">
+            <span>- Add Expense</span>
+            <div class="btn-shine"></div>
+          </button>
         </form>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Transactions</h2>
-      <div id="transactionList">
-        <p class="empty-msg">No transactions yet.</p>
+    <div class="card transactions-card">
+      <div class="card-header">
+        <div class="card-icon history-icon">⏱</div>
+        <h2>Transactions</h2>
+        <span class="transaction-count" id="transactionCount">0</span>
       </div>
-      <button id="clearAll" class="btn btn-clear">Clear All</button>
+      <div id="transactionList">
+        <div class="empty-state">
+          <span class="empty-icon">📭</span>
+          <p>No transactions yet</p>
+          <p class="empty-sub">Add income or expenses above</p>
+        </div>
+      </div>
+      <button id="clearAll" class="btn btn-clear">
+        <span>Clear All</span>
+      </button>
     </div>
   </div>
 
