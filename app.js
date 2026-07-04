@@ -168,7 +168,7 @@ function updateBalanceCard(newBalance) {
   void balanceEl.offsetWidth;
   if (newBalance !== prevBalance) balanceEl.classList.add('bump');
 
-  document.title = (newBalance >= 0 ? '' : '-') + 'PKR ' + Math.abs(newBalance).toLocaleString('en-PK') + ' — My Balance';
+  document.title = (newBalance >= 0 ? '' : '-') + 'PKR ' + Math.abs(newBalance).toLocaleString('en-PK') + ' — CatBalance';
 
   prevBalance = newBalance;
 }
