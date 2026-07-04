@@ -12,7 +12,7 @@
 </head>
 <body>
 
-  <!-- ═══ SVG Sprite ═══ -->
+  <!-- SVG Sprite -->
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <defs>
       <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -46,11 +46,6 @@
       <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"/>
       </symbol>
-      <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/>
-        <path d="M19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1z" opacity=".6"/>
-        <path d="M5 17l.7 2 .8.5-.8.5-.7 2-.7-2-.8-.5.8-.5z" opacity=".4"/>
-      </symbol>
       <symbol id="i-trending-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
         <polyline points="16 7 22 7 22 13"/>
@@ -59,18 +54,10 @@
         <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
         <polyline points="16 17 22 17 22 11"/>
       </symbol>
-      <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
-        <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
-      </symbol>
-      <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"/>
-        <line x1="6" y1="6" x2="18" y2="18"/>
-      </symbol>
     </defs>
   </svg>
 
-  <!-- ═══ Background ═══ -->
+  <!-- Background -->
   <div class="bg-gradient"></div>
   <div class="bg-orbs">
     <div class="orb orb-1"></div>
@@ -84,37 +71,47 @@
   <div class="bg-spotlight" id="spotlight"></div>
   <div class="scroll-progress" id="scrollProgress"></div>
 
-  <!-- ═══ Main ═══ -->
+  <!-- Main -->
   <div class="container">
 
     <!-- Header -->
     <header class="header">
       <div class="logo">
-        <span class="logo-icon svg-icon" id="logoIcon">
-          <svg width="36" height="36"><use xlink:href="#i-wallet"/></svg>
+        <span class="logo-icon svg-icon">
+          <svg width="32" height="32"><use xlink:href="#i-wallet"/></svg>
         </span>
         <h1 class="gradient-text">My Balance</h1>
       </div>
-      <p class="subtitle">Track your finances</p>
     </header>
 
     <!-- Balance Card -->
     <div class="balance-card" id="balanceCard">
       <div class="balance-shine"></div>
       <div class="balance-glow" id="balanceGlow"></div>
-      <div class="balance-inner">
-        <span class="balance-amount" id="balance">PKR 0</span>
-        <div class="balance-bar">
-          <div class="balance-bar-fill" id="balanceBar"></div>
-        </div>
-        <div class="balance-stats">
-          <div class="stat stat-income">
-            <svg width="16" height="16"><use xlink:href="#i-trending-up"/></svg>
-            <span id="totalIncome">PKR 0</span>
+      <div class="balance-grid">
+        <!-- Left: Big number -->
+        <div class="balance-left">
+          <span class="balance-amount" id="balance">PKR 0</span>
+          <div class="balance-bar">
+            <div class="balance-bar-fill" id="balanceBar"></div>
           </div>
+        </div>
+        <!-- Right: Income / Expense -->
+        <div class="balance-right">
+          <div class="stat stat-income">
+            <svg width="18" height="18"><use xlink:href="#i-trending-up"/></svg>
+            <div class="stat-text">
+              <span class="stat-label">Income</span>
+              <span class="stat-value" id="totalIncome">PKR 0</span>
+            </div>
+          </div>
+          <div class="stat-divider"></div>
           <div class="stat stat-expense">
-            <svg width="16" height="16"><use xlink:href="#i-trending-down"/></svg>
-            <span id="totalExpense">PKR 0</span>
+            <svg width="18" height="18"><use xlink:href="#i-trending-down"/></svg>
+            <div class="stat-text">
+              <span class="stat-label">Expenses</span>
+              <span class="stat-value" id="totalExpense">PKR 0</span>
+            </div>
           </div>
         </div>
       </div>
@@ -127,9 +124,9 @@
         <div class="card-ripple-wrap">
           <div class="card-header">
             <div class="card-icon income-icon">
-              <svg width="18" height="18"><use xlink:href="#i-arrow-up"/></svg>
+              <svg width="16" height="16"><use xlink:href="#i-arrow-up"/></svg>
             </div>
-            <h2>Add Income</h2>
+            <h2>Income</h2>
           </div>
           <form id="incomeForm">
             <div class="input-group">
@@ -146,7 +143,7 @@
             </div>
             <button type="submit" class="btn btn-income" id="incomeBtn">
               <span class="btn-text">
-                <svg width="16" height="16"><use xlink:href="#i-plus"/></svg>
+                <svg width="14" height="14"><use xlink:href="#i-plus"/></svg>
                 Add Income
               </span>
               <span class="btn-success">
@@ -167,9 +164,9 @@
         <div class="card-ripple-wrap">
           <div class="card-header">
             <div class="card-icon expense-icon">
-              <svg width="18" height="18"><use xlink:href="#i-arrow-down"/></svg>
+              <svg width="16" height="16"><use xlink:href="#i-arrow-down"/></svg>
             </div>
-            <h2>Add Expense</h2>
+            <h2>Expenses</h2>
           </div>
           <form id="expenseForm">
             <div class="input-group">
@@ -186,7 +183,7 @@
             </div>
             <button type="submit" class="btn btn-expense" id="expenseBtn">
               <span class="btn-text">
-                <svg width="16" height="16"><use xlink:href="#i-plus"/></svg>
+                <svg width="14" height="14"><use xlink:href="#i-plus"/></svg>
                 Add Expense
               </span>
               <span class="btn-success">
@@ -207,10 +204,13 @@
     <div class="card transactions-card" id="transactionsCard">
       <div class="card-header">
         <div class="card-icon history-icon">
-          <svg width="18" height="18"><use xlink:href="#i-clock"/></svg>
+          <svg width="16" height="16"><use xlink:href="#i-clock"/></svg>
         </div>
         <h2>Transactions</h2>
         <span class="transaction-count" id="transactionCount">0</span>
+        <button id="clearAll" class="btn-clear-inline" title="Clear all">
+          <svg width="14" height="14"><use xlink:href="#i-trash"/></svg>
+        </button>
       </div>
       <div id="transactionList">
         <div class="empty-state" id="emptyState">
@@ -226,12 +226,6 @@
           <p class="empty-sub">Add income or expenses above</p>
         </div>
       </div>
-      <button id="clearAll" class="btn btn-clear">
-        <span class="btn-text">
-          <svg width="16" height="16"><use xlink:href="#i-trash"/></svg>
-          Clear All
-        </span>
-      </button>
     </div>
 
     <!-- Toast -->
