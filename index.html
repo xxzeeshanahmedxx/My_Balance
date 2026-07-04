@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Balance</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>My Balance</h1>
+    </header>
+
+    <div class="balance-card">
+      <span class="balance-label">Current Balance</span>
+      <span class="balance-amount" id="balance">PKR 0</span>
+    </div>
+
+    <div class="row">
+      <div class="card income-card">
+        <h2>Add Income</h2>
+        <form id="incomeForm">
+          <input type="text" id="incomeSource" placeholder="Source (e.g. Salary)" required>
+          <input type="number" id="incomeAmount" placeholder="Amount" min="0" required>
+          <button type="submit" class="btn btn-income">+ Add Income</button>
+        </form>
+      </div>
+
+      <div class="card expense-card">
+        <h2>Add Expense</h2>
+        <form id="expenseForm">
+          <input type="text" id="expenseSource" placeholder="Source (e.g. Food)" required>
+          <input type="number" id="expenseAmount" placeholder="Amount" min="0" required>
+          <button type="submit" class="btn btn-expense">- Add Expense</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Transactions</h2>
+      <div id="transactionList">
+        <p class="empty-msg">No transactions yet.</p>
+      </div>
+      <button id="clearAll" class="btn btn-clear">Clear All</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
