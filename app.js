@@ -1,20 +1,4 @@
-const STORAGE_KEY = 'my_balance_data';
-
-let transactions = loadData();
-
-function loadData() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  } catch { return []; }
-}
-
-function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
-}
-
-function getBalance() {
-  return transactions.reduce((sum, t) => t.type === 'income' ? sum + t.amount : sum - t.amount, 0);
-}
+let transactions = [];
 
 function formatPKR(n) {
   return 'PKR ' + n.toLocaleString('en-PK');
@@ -30,7 +14,22 @@ function formatDate(dateStr) {
   return `${day}/${month}/${year} ${hours}:${mins}`;
 }
 
-function render() {
+function getBalance() {
+  return transactions.reduce((sum, t) => t.type === 'income' ? sum + t.amount : sum - t.amount, 0);
+}
+
+async function fetchTransactions() {
+  try {
+    const res = await fetch('/api/transactions');
+    const data = await res.json();
+    transactions = data.transactions || [];
+  } catch {
+    transactions = [];
+  }
+  render();
+}
+
+async function render() {
   const balanceEl = document.getElementById('balance');
   const listEl = document.getElementById('transactionList');
   const balance = getBalance();
@@ -44,7 +43,7 @@ function render() {
   }
 
   listEl.innerHTML = '';
-  for (const t of [...transactions].reverse()) {
+  for (const t of transactions) {
     const div = document.createElement('div');
     div.className = 'transaction';
 
@@ -72,54 +71,59 @@ function escapeHtml(str) {
   return el.innerHTML;
 }
 
-function addTransaction(type) {
-  const sourceInput = document.getElementById(type + 'Source');
-  const amountInput = document.getElementById(type + 'Amount');
-  const source = sourceInput.value.trim();
-  const amount = parseFloat(amountInput.value);
-
+document.getElementById('incomeForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const source = document.getElementById('incomeSource').value.trim();
+  const amount = parseFloat(document.getElementById('incomeAmount').value);
   if (!source || !amount || amount <= 0) return;
 
-  transactions.push({
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-    type,
-    source,
-    amount,
-    date: new Date().toISOString()
-  });
-
-  saveData();
-  sourceInput.value = '';
-  amountInput.value = '';
-  render();
-}
-
-document.getElementById('incomeForm').addEventListener('submit', e => {
-  e.preventDefault();
-  addTransaction('income');
+  try {
+    await fetch('/api/transactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'income', source, amount })
+    });
+    document.getElementById('incomeSource').value = '';
+    document.getElementById('incomeAmount').value = '';
+    await fetchTransactions();
+  } catch {}
 });
 
-document.getElementById('expenseForm').addEventListener('submit', e => {
+document.getElementById('expenseForm').addEventListener('submit', async e => {
   e.preventDefault();
-  addTransaction('expense');
+  const source = document.getElementById('expenseSource').value.trim();
+  const amount = parseFloat(document.getElementById('expenseAmount').value);
+  if (!source || !amount || amount <= 0) return;
+
+  try {
+    await fetch('/api/transactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'expense', source, amount })
+    });
+    document.getElementById('expenseSource').value = '';
+    document.getElementById('expenseAmount').value = '';
+    await fetchTransactions();
+  } catch {}
 });
 
-document.getElementById('clearAll').addEventListener('click', () => {
+document.getElementById('clearAll').addEventListener('click', async () => {
   if (transactions.length === 0) return;
-  if (confirm('Delete all transactions?')) {
-    transactions = [];
-    saveData();
-    render();
-  }
+  if (!confirm('Delete all transactions?')) return;
+  try {
+    await fetch('/api/transactions', { method: 'DELETE' });
+    await fetchTransactions();
+  } catch {}
 });
 
-document.getElementById('transactionList').addEventListener('click', e => {
+document.getElementById('transactionList').addEventListener('click', async e => {
   const btn = e.target.closest('.delete-btn');
   if (!btn) return;
   const id = btn.dataset.id;
-  transactions = transactions.filter(t => t.id !== id);
-  saveData();
-  render();
+  try {
+    await fetch(`/api/transactions/${id}`, { method: 'DELETE' });
+    await fetchTransactions();
+  } catch {}
 });
 
-render();
+fetchTransactions();
