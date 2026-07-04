@@ -5,6 +5,67 @@
 let transactions = [];
 let prevBalance = 0;
 let currentType = 'income';
+const AUTH_KEY = 'bal_token';
+
+function getToken() { return localStorage.getItem(AUTH_KEY); }
+function setToken(t) { localStorage.setItem(AUTH_KEY, t); }
+function clearToken() { localStorage.removeItem(AUTH_KEY); }
+
+function authHeaders() {
+  const t = getToken();
+  return t ? { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+}
+
+function showLogin() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginOverlay').style.display = 'flex';
+}
+
+function showApp() {
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('app').style.display = '';
+  if (typeof Lenis !== 'undefined') {
+    const l = new Lenis({ duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+    function raf(t) { l.raf(t); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+  }
+  initTilt();
+  fetchTransactions();
+}
+
+async function login(password) {
+  const loginBtn = document.getElementById('loginBtn');
+  const loginBtnText = document.getElementById('loginBtnText');
+  const loginSpinner = document.getElementById('loginSpinner');
+  const loginError = document.getElementById('loginError');
+  loginBtn.disabled = true;
+  loginBtnText.style.display = 'none';
+  loginSpinner.style.display = 'block';
+  loginError.classList.remove('show');
+  try {
+    const res = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) });
+    const data = await res.json();
+    if (data.ok && data.token) {
+      setToken(data.token);
+      showApp();
+    } else {
+      loginError.classList.add('show');
+      loginBtn.disabled = false;
+      loginBtnText.style.display = 'inline';
+      loginSpinner.style.display = 'none';
+    }
+  } catch {
+    loginError.classList.add('show');
+    loginBtn.disabled = false;
+    loginBtnText.style.display = 'inline';
+    loginSpinner.style.display = 'none';
+  }
+}
+
+function logout() {
+  clearToken();
+  showLogin();
+}
 
 function formatPKR(n) {
   return Math.abs(n).toLocaleString('en-PK');
@@ -204,7 +265,8 @@ function showSkeleton() {
 async function fetchTransactions() {
   showSkeleton();
   try {
-    const res = await fetch('/api/transactions');
+    const res = await fetch('/api/transactions', { headers: authHeaders() });
+    if (res.status === 401) { clearToken(); showLogin(); return; }
     const data = await res.json();
     transactions = data.transactions || [];
   } catch {
@@ -233,7 +295,7 @@ async function addTransaction() {
   try {
     const res = await fetch('/api/transactions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({ type: currentType, source, amount })
     });
 
@@ -275,13 +337,24 @@ document.getElementById('clearAll').addEventListener('click', async () => {
   if (transactions.length === 0) return;
   if (!confirm('Delete all transactions?')) return;
   try {
-    await fetch('/api/transactions', { method: 'DELETE' });
+    await fetch('/api/transactions', { method: 'DELETE', headers: authHeaders() });
     showToast('All transactions cleared', 'success');
     await fetchTransactions();
   } catch {
     showToast('Failed to clear', 'error');
   }
 });
+
+document.getElementById('loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  login(document.getElementById('loginPassword').value);
+});
+
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login(e.target.value);
+});
+
+document.getElementById('logoutBtn').addEventListener('click', logout);
 
 document.getElementById('transactionList').addEventListener('click', async e => {
   const btn = e.target.closest('.tx-delete');
@@ -293,7 +366,7 @@ document.getElementById('transactionList').addEventListener('click', async e => 
     await new Promise(r => setTimeout(r, 250));
   }
   try {
-    await fetch(`/api/transactions/${id}`, { method: 'DELETE' });
+    await fetch(`/api/transactions/${id}`, { method: 'DELETE', headers: authHeaders() });
     showToast('Transaction deleted', 'success');
     await fetchTransactions();
   } catch {
@@ -301,14 +374,6 @@ document.getElementById('transactionList').addEventListener('click', async e => 
     await fetchTransactions();
   }
 });
-
-// ── Lenis Smooth Scroll ──
-function initLenis() {
-  if (typeof Lenis === 'undefined') return;
-  const lenis = new Lenis({ duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
-  function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
-  requestAnimationFrame(raf);
-}
 
 // ── 3D Tilt (subtle) ──
 function initTilt() {
@@ -327,7 +392,9 @@ function initTilt() {
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
-  initTilt();
-  initLenis();
-  fetchTransactions();
+  if (getToken()) {
+    showApp();
+  } else {
+    showLogin();
+  }
 });
