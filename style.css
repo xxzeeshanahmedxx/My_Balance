@@ -382,54 +382,58 @@ h1, h2, h3 { font-weight: 600; line-height: 1.3; color: var(--text); }
 /* ── Login Overlay ── */
 #loginOverlay {
   position: fixed; inset: 0; z-index: 10000;
-  display: flex; align-items: center; justify-content: center;
-  padding: 16px;
-  animation: fadeIn 0.3s ease-out;
+  background: #09090b;
 }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-.login-card {
-  background: #131316;
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 12px;
-  padding: 32px 24px;
-  width: 100%;
-  max-width: 360px;
-  text-align: center;
-  animation: loginFadeUp .35s ease-out;
+.bg-ambient {
+  position: fixed; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(16,185,129,0.06), transparent);
+  z-index: 0;
 }
-@keyframes loginFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-.login-logo {
-  width: 48px; height: 48px;
-  display: block;
-  margin: 0 auto 16px;
-  border-radius: 12px;
+.glass-panel-strong {
+  background: linear-gradient(180deg, #131316 0%, rgba(19,19,22,0.8) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
-
-.login-title {
-  font-family: 'Sora', sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 4px;
-  color: #fafafa;
+.bg-gradient-card { position: relative; }
+.bg-gradient-card::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 50%);
 }
-
-.login-subtitle {
-  font-size: 14px;
-  color: #71717a;
-  margin-bottom: 24px;
-  font-family: 'Inter', sans-serif;
+.hover-border-gradient { transition: border-color .3s; }
+.hover-border-gradient:hover { border-color: rgba(16,185,129,0.3); }
+.text-gradient {
+  background: linear-gradient(135deg, #fafafa 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
+.text-ink-tertiary { color: #71717a; }
+.min-h-screen { min-height: 100vh; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.p-4 { padding: 16px; }
+.w-full { width: 100%; }
+.max-w-sm { max-width: 360px; }
+.z-10 { z-index: 10; }
+.text-center { text-align: center; }
+.mb-6 { margin-bottom: 24px; }
+.w-12 { width: 48px; }
+.h-12 { height: 48px; }
+.rounded-xl { border-radius: 12px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.mb-3 { margin-bottom: 12px; }
+.text-2xl { font-size: 24px; }
+.font-bold { font-weight: 700; }
+.tracking-tight { letter-spacing: -0.02em; }
+.text-sm { font-size: 14px; }
+.mt-1 { margin-top: 4px; }
+.space-y-4 > * + * { margin-top: 16px; }
+.rounded-lg { border-radius: 12px; }
+.border { border: 1px solid rgba(255,255,255,0.05); }
+.p-6 { padding: 24px; }
 
-.login-card form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.login-card input {
+#loginOverlay input {
   background: #1a1a1f;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 8px;
@@ -441,13 +445,13 @@ h1, h2, h3 { font-weight: 600; line-height: 1.3; color: var(--text); }
   transition: border-color .2s, box-shadow .2s;
   width: 100%;
 }
-.login-card input:focus {
+#loginOverlay input:focus {
   border-color: #10b981;
   box-shadow: 0 0 0 2px rgba(16,185,129,0.15);
 }
-.login-card input::placeholder { color: #52525b; }
+#loginOverlay input::placeholder { color: #52525b; }
 
-.login-card button {
+#loginOverlay button {
   background: #10b981;
   color: #fafafa;
   border: none;
@@ -460,9 +464,9 @@ h1, h2, h3 { font-weight: 600; line-height: 1.3; color: var(--text); }
   transition: background .2s, transform .1s;
   width: 100%;
 }
-.login-card button:hover { background: #34d399; }
-.login-card button:active { transform: scale(0.97); }
-.login-card button:disabled { opacity: 0.5; cursor: default; }
+#loginOverlay button:hover { background: #34d399; }
+#loginOverlay button:active { transform: scale(0.97); }
+#loginOverlay button:disabled { opacity: 0.5; cursor: default; }
 
 .login-spinner {
   display: none;

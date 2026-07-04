@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10b981">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" type="image/webp" href="/logo.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,19 +58,24 @@
   <div class="bg-gradient"></div>
   <div class="bg-noise"></div>
 
-  <div id="loginOverlay">
-    <div class="login-card">
-      <img src="/logo.webp" alt="CatBalance" class="login-logo">
-      <h1 class="login-title">CatBalance</h1>
-      <p class="login-subtitle">Sign in to your account</p>
+  <div id="loginOverlay" class="min-h-screen flex items-center justify-center p-4" style="zoom:1.1">
+    <div class="bg-ambient"></div>
+    <div class="w-full max-w-sm relative z-10">
+    <div class="login-card glass-panel-strong rounded-lg border border-hairline p-6 bg-gradient-card hover-border-gradient">
+      <div class="text-center mb-6">
+      <img src="/logo.webp" alt="CatBalance" class="w-12 h-12 rounded-xl mx-auto mb-3">
+      <h1 class="text-2xl font-bold tracking-tight text-gradient">CatBalance</h1>
+      <p class="text-ink-tertiary text-sm mt-1">Sign in to your account</p>
+      </div>
       <div class="login-error" id="loginError">
         <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
         Invalid password
       </div>
-      <form id="loginForm">
+      <form id="loginForm" class="space-y-4">
         <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" autofocus>
         <button type="submit" id="loginBtn"><span id="loginBtnText">Sign in</span><span class="login-spinner" id="loginSpinner"></span></button>
       </form>
+    </div>
     </div>
   </div>
 
