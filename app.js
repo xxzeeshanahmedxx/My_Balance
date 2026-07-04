@@ -186,9 +186,6 @@ function updateBalanceCard(newBalance) {
   const barEl = document.getElementById('balanceBar');
   const incomeEl = document.getElementById('totalIncome');
   const expenseEl = document.getElementById('totalExpense');
-  const ringWrap = document.getElementById('progressRingWrap');
-  const ringFill = document.getElementById('progressRingFill');
-  const ringText = document.getElementById('progressRingText');
 
   // Animate number
   animateNumber(balanceEl, prevBalance, newBalance, 600);
@@ -233,17 +230,6 @@ function updateBalanceCard(newBalance) {
   barEl.style.background = newBalance >= 0
     ? 'linear-gradient(90deg, #22c55e, #6366f1)'
     : 'linear-gradient(90deg, #ef4444, #f97316)';
-
-  // Progress ring
-  if (totalInc > 0 || totalExp > 0) {
-    ringWrap.classList.add('visible');
-    const ratio = totalInc / (totalInc + totalExp) * 100;
-    ringFill.style.strokeDashoffset = 100 - ratio;
-    ringFill.style.stroke = ratio >= 50 ? 'var(--green)' : ratio >= 30 ? '#f59e0b' : 'var(--red)';
-    ringText.textContent = Math.round(ratio) + '%';
-  } else {
-    ringWrap.classList.remove('visible');
-  }
 
   // Bump animation
   balanceEl.classList.remove('bump');
