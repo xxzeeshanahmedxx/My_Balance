@@ -125,18 +125,7 @@ function animateNumber(el, from, to, duration = 500) {
   requestAnimationFrame(tick);
 }
 
-function fireConfetti() {
-  if (typeof confetti !== 'function') return;
-  confetti({
-    particleCount: 30,
-    spread: 45,
-    origin: { y: 0.6 },
-    colors: ['#6366f1', '#818cf8', '#a5b4fc'],
-    startVelocity: 25,
-    gravity: 0.5,
-    scalar: 0.75
-  });
-}
+function fireConfetti() {}
 
 function showToast(message, type = 'success') {
   const container = document.getElementById('toastContainer');
